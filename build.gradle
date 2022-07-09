@@ -1,0 +1,60 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            name = "forge"
+            url = "https://maven.minecraftforge.net/"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath ("com.anatawa12.forge:ForgeGradle:$fg_version") {
+            changing = true
+        }
+    }
+}
+
+plugins {
+    id 'java-library'
+}
+
+apply plugin: 'forge'
+
+version = mod_version
+group = mod_group
+
+targetCompatibility = sourceCompatibility = JavaVersion.VERSION_1_8
+minecraft.version = mc_version + '-' + forge_version + '-' + mc_version
+
+dependencies {
+    implementation 'org.jetbrains:annotations:23.0.0'
+
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+}
+
+jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    exclude "net/minecraft/**"
+    destinationDirectory.set(file("$rootDir/compiled"))
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version': project.version, 'mcversion': project.minecraft.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
