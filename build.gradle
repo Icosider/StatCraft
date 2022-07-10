@@ -33,26 +33,13 @@ dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
 
     compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     exclude "net/minecraft/**"
     destinationDirectory.set(file("$rootDir/compiled"))
-}
-
-processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
-
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-        expand 'version': project.version, 'mcversion': project.minecraft.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
-    }
 }
 
 tasks.withType(JavaCompile) {
